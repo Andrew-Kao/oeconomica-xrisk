@@ -1,5 +1,5 @@
 import pdb
-import numpy
+import numpy as np
 
 # contains info about payoffs and probabilities of success given observed success/failure
 
@@ -20,11 +20,19 @@ dprkprofiles = ["ss", "sf", "fs", "ff"]
 
 def solveGame(state, pss, psf):
 
-	nashMatrix = np.array([[]])
+	# 4x4 matrix containing info about payoffs, and the action profiles associated with it
+	nashMatrix = [[0 for x in range(4)] for y in range(4)]
 
-	for usmove  in usaprofiles:
+	i = 0
+	j = 0
+	for usmove in usaprofiles:
 		for dprkmove in dprkprofiles:
-			expectedPayoff(usmove, dprkmove, state, pss, psf)
+			print(i,j)
+			nashMatrix[i][j] = (expectedPayoff(usmove, dprkmove, state, pss, psf), usmove, dprkmove)
+			j += 1
+		i +=1 
+		j = 0
+	
 
 
 	return XYZ
@@ -35,3 +43,10 @@ def expectedPayoff(usmove,dprkmove, state,pss, psf):
 	usa = state[dprkmove, usmove][0][1] * pss + state[dprkmove, usmove][1][1] * psf
 	return (dprk, usa)
 
+# 
+def findBR(nashMatrix):
+
+	return 
+
+
+solveGame(state, pss, psf)
