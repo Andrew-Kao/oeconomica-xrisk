@@ -63,10 +63,10 @@ def checkEq(state, eq):
 	# trueeq = [boolean for whether it holds, actions - [eq], beliefs - [[alpha min, alpha max],[q min, q max]]]
 	trueeq = [0, eq, [[0,1],[0,1]]]
 
-	# Nuke test was successful
+	# When DPRK annouces success
 
 
-	# Nuke test failed
+	# When DPRK announces failure
 
 	return 
 
