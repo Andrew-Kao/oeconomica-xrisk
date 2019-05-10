@@ -1,5 +1,6 @@
 import pdb
 import numpy as np
+from anytree import Node, RenderTree
 
 # contains info about payoffs and probabilities of success given observed success/failure
 
@@ -13,6 +14,13 @@ state = {
 }
 pss = .75 
 psf = .25
+
+top = Node("top")
+Success = Node("Success", parent = top)
+success = Node("success", parent = Success)
+
+Failure = Node("Failure", parent = top)
+success = Node("success", parent = Failure)
 
 # first one is success, second letter is failure
 usaprofiles = ["aa", "ar", "ra", "rr"]
@@ -38,9 +46,31 @@ def solveGame(state, pss, psf):
 	nashMatrix = findBR(nashMatrix)
 	nashEquilibria = findNash(nashMatrix)
 
-	print nashEquilibria
+	pbe = []
+
+	eqnum = 0
+	for eq in nashEquilibria:
+		checkEq(state, eq)
+		eqnum += 1
 
 	return nashMatrix
+
+
+# for each nash, determine: (1) for what beliefs does sequentially rationality hold? (2) what beliefs are supported?
+# note - we only need to check the US, bc DPRK is deterministic
+def checkEq(state, eq):
+
+	# trueeq = [boolean for whether it holds, actions - [eq], beliefs - [[alpha min, alpha max],[q min, q max]]]
+	trueeq = [0, eq, [[0,1],[0,1]]]
+
+	# Nuke test was successful
+
+
+	# Nuke test failed
+
+	return 
+
+
 
 # find the Nash Equilibria given best responses
 def findNash(nashMatrix):
