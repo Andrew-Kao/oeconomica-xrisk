@@ -36,15 +36,28 @@ def solveGame(state, pss, psf):
 	
 	# Determine best responses and equilibria
 	nashMatrix = findBR(nashMatrix)
+	nashEquilibria = findNash(nashMatrix)
 
-	print nashMatrix
+	print nashEquilibria
+
 	return nashMatrix
 
-# usa, dprk are expected payoffs for the usa, dprk
-def expectedPayoff(usamove,dprkmove, state,pss, psf):
-	dprk = state[dprkmove, usamove][0][0] * pss + state[dprkmove, usamove][1][0] * psf
-	usa = state[dprkmove, usamove][0][1] * pss + state[dprkmove, usamove][1][1] * psf
-	return (dprk, usa)
+# find the Nash Equilibria given best responses
+def findNash(nashMatrix):
+
+	nashes = []
+
+	i = 0
+	j = 0
+	for usamove in usaprofiles:
+		for dprkmove in dprkprofiles:
+			if nashMatrix[i][j][3] == 1 & nashMatrix[i][j][4]:
+				nashes.append((dprkmove,usamove))
+			j += 1
+		i +=1 
+		j = 0
+
+	return nashes
 
 # find the best responses given payoffs to a nash matrix
 def findBR(nashMatrix):
@@ -62,7 +75,6 @@ def findBR(nashMatrix):
 			j += 1
 		j = 0
 		
-		print(score)
 		# fill in best responses
 		for dprkmove in dprkprofiles:
 			if nashMatrix[i][j][2][0] == score:
@@ -97,10 +109,12 @@ def findBR(nashMatrix):
 
 	return nashMatrix
 
-# find the Nash Equilibria given best responses
-def findNash(nashMatrix):
 
-	return
+# usa, dprk are expected payoffs for the usa, dprk
+def expectedPayoff(usamove,dprkmove, state,pss, psf):
+	dprk = state[dprkmove, usamove][0][0] * pss + state[dprkmove, usamove][1][0] * psf
+	usa = state[dprkmove, usamove][0][1] * pss + state[dprkmove, usamove][1][1] * psf
+	return (dprk, usa)
 
 
 solveGame(state, pss, psf)
