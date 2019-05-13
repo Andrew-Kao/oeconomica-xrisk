@@ -15,12 +15,25 @@ state = {
 pss = .75 
 psf = .25
 
+# payoffs at bottom level?
 top = Node("top")
 Success = Node("Success", parent = top)
 success = Node("success", parent = Success)
+attack = Node("attack", parent = success)
+retreat = Node("retreat", parent = success)
+failure = Node("failure", parent = Success)
+attack = Node("attack", parent = failure)
+retreat = Node("retreat", parent = failure)
 
 Failure = Node("Failure", parent = top)
 success = Node("success", parent = Failure)
+attack = Node("attack", parent = success)
+retreat = Node("retreat", parent = success)
+failure = Node("failure", parent = Failure)
+attack = Node("attack", parent = failure)
+retreat = Node("retreat", parent = failure)
+
+print(RenderTree(top))
 
 # first one is success, second letter is failure
 usaprofiles = ["aa", "ar", "ra", "rr"]
