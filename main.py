@@ -2,7 +2,12 @@ import pdb
 import numpy as np
 from anytree import Node, RenderTree
 from sympy import *
+import matplotlib.pyplot as plt
 
+
+
+# our base outcomes
+base = [[0,1],[-2,-3],[0,0],[-2,-3],[0,-1],[-2,2],[0,0],[-2,2]]
 
 ### The Tree
 top = Node("top")
@@ -23,6 +28,30 @@ rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
 # print(RenderTree(top))
+<<<<<<< HEAD
+=======
+
+
+def populate(outcomes, cost):
+	rss.dprk = outcomes[0][0]
+	rss.usa = outcomes[0][1]
+	ass.dprk = outcomes[1][0]
+	ass.usa = outcomes[1][1]
+	rsf.dprk = outcomes[2][0] - cost
+	rsf.usa = outcomes[2][1]
+	asf.dprk = outcomes[3][0] - cost
+	asf.usa = outcomes[3][1]
+	rfs.dprk = outcomes[4][0] - cost
+	rfs.usa = outcomes[4][1]
+	afs.dprk = outcomes[5][0] - cost
+	afs.usa = outcomes[5][1]
+	rff.dprk = outcomes[6][0]
+	rff.usa  =outcomes[6][1]
+	aff.dprk = outcomes[7][0]
+	aff.usa = outcomes[7][1]
+
+	return None
+>>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
@@ -263,9 +292,75 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 	return (dprk, usa)
 
 
+<<<<<<< HEAD
 # eqlbms = solveGame(state, pss, psf)
 # print(eqlbms[0])  # PBEs
 # print(eqlbms[1])  # non-PBEs, but still Nash
+=======
+###########
+## Graphing/computation loop
+###########
+
+
+### lying cost
+def lying():
+
+	lies = np.linspace(0,5,20, endpoint=True)
+	pbeCounts = []
+	everAttacks = []
+	alwaysAttacks = []
+	everTruths = []
+	alwaysTruths = []
+
+	for lieCost in lies:
+		populate(base, lieCost)
+		eqlbms = solveGame(state, pss, psf)
+
+		pbes = eqlbms[0]
+		pbeCount = len(pbes)
+
+		everAttack = 0
+		alwaysAttack = 0
+		everTruth = 0
+		alwaysTruth = 0
+
+		for pbe in pbes:
+			dprkStrat = pbe[1][0]
+			usaStrat = pbe[1][1]
+
+			if usaStrat[0] == 'a' | usaStrat[1] == 'a':
+				everAttack += 1
+
+			if usaStrat[0] == 'a' & usaStrat[1] == 'a':
+				alwaysAttack += 1
+
+			if dprkStrat[0] == 's' | dprkStrat[1] == 'f':
+				everTruth += 1
+
+			if dprkStrat[0] == 's' & dprkStrat[1] == 'f':
+				alwaysTruth += 1
+
+		pbeCounts.append(pbeCount)
+		everAttacks.append(everAttack)
+		alwaysAttacks.append(alwaysAttack)
+		everTruths.append(everTruth)
+		alwaysTruths.append(alwaysTruth)
+
+		# trueeq = [rational, eq, [alphaL,qL]]
+
+	
+
+	return None
+
+
+
+
+
+
+eqlbms = solveGame(state, pss, psf)
+print(eqlbms[0])  # PBEs
+print(eqlbms[1])  # non-PBEs, but still Nash
+>>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 
