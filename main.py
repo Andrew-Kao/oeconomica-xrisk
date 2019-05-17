@@ -1,6 +1,7 @@
 import pdb
 import numpy as np
 from anytree import Node, RenderTree
+from sympy import *
 
 # contains info about payoffs and probabilities of success given observed success/failure
 
@@ -15,25 +16,25 @@ state = {
 pss = .75 
 psf = .25
 
-# payoffs at bottom level?
 top = Node("top")
 Success = Node("Success", parent = top)
 success = Node("success", parent = Success)
-attack = Node("attack", parent = success)
-retreat = Node("retreat", parent = success)
+rss = Node("retreat", parent = success, dprk = 0, usa = -1)
+ass = Node("attack", parent = success, dprk = -2, usa = -3)
 failure = Node("failure", parent = Success)
-attack = Node("attack", parent = failure)
-retreat = Node("retreat", parent = failure)
+rsf = Node("retreat", parent = failure, dprk = 0, usa = 0)
+asf = Node("attack", parent = failure, dprk = -2, usa = -3)
 
 Failure = Node("Failure", parent = top)
 success = Node("success", parent = Failure)
-attack = Node("attack", parent = success)
-retreat = Node("retreat", parent = success)
+rfs = Node("retreat", parent = success, dprk = 0, usa = -1)
+afs = Node("attack", parent = success, dprk = -2, usa = 2)
 failure = Node("failure", parent = Failure)
-attack = Node("attack", parent = failure)
-retreat = Node("retreat", parent = failure)
+rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
+aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
 print(RenderTree(top))
+
 
 # first one is success, second letter is failure
 usaprofiles = ["aa", "ar", "ra", "rr"]
@@ -73,13 +74,50 @@ def solveGame(state, pss, psf):
 # note - we only need to check the US, bc DPRK is deterministic
 def checkEq(state, eq):
 
+	alpha, q = symbols('alpha q')
+
 	# trueeq = [boolean for whether it holds, actions - [eq], beliefs - [[alpha min, alpha max],[q min, q max]]]
-	trueeq = [0, eq, [[0,1],[0,1]]]
+	alphaL = [0,1]
+	qL = [0,1]
 
 	# When DPRK annouces success
 
+	usRealStrat = eq[1][0]
+	usFakeStrat = ''
+	if usRealStrat == 'r':
+		usFakeStrat = 'a'
+	else:
+		usFakeStrat = 'r'
+
+	solnSucc = solve([ alpha* (globals()[usRealStrat+"ss"].usa) + (1-alpha)*(globals()[usRealStrat+"fs"].usa) >= \
+		alpha* (globals()[usFakeStrat+"ss"].usa) + (1-alpha)*(globals()[usFakeStrat+"fs"].usa), alpha >= 0, alpha <= 1],dict = True)
+	try:
+		bounds = solnSucc.as_set().boundary
+		alphaL[0], alphaL[1] = bounds
+	except:
+		alphaL[1] = solnSucc.as_set()
+		pass
+
 
 	# When DPRK announces failure
+	usRealStrat = eq[1][1]
+	usFakeStrat = ''
+	if usRealStrat == 'r':
+		usFakeStrat = 'a'
+	else:
+		usFakeStrat = 'r'
+
+	solnSucc = solve([ alpha* (globals()[usRealStrat+"sf"].usa) + (1-alpha)*(globals()[usRealStrat+"ff"].usa) >= \
+		alpha* (globals()[usFakeStrat+"sf"].usa) + (1-alpha)*(globals()[usFakeStrat+"ff"].usa), alpha >= 0, alpha <= 1],dict = True)
+	try:
+		bounds = solnSucc.as_set().boundary
+		qL[0], qL[1] = bounds
+	except:
+		qL[1] = solnSucc.as_set()
+		pass
+
+	trueeq = [0, eq, [alphaL,qL]]
+	print(trueeq)
 
 	return 
 
