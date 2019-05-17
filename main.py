@@ -2,13 +2,7 @@ import pdb
 import numpy as np
 from anytree import Node, RenderTree
 from sympy import *
-import plotly.plotly as py
-import plotly.graph_objs as go
-
-
-
-# lying cost
-lieCost = 2
+import matplotlib.pyplot as plt
 
 
 
@@ -285,6 +279,66 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 	dprk = state[dprkmove, usamove][0][0] * pss + state[dprkmove, usamove][1][0] * psf
 	usa = state[dprkmove, usamove][0][1] * pss + state[dprkmove, usamove][1][1] * psf
 	return (dprk, usa)
+
+
+###########
+## Graphing/computation loop
+###########
+
+
+### lying cost
+def lying():
+
+	lies = np.linspace(0,5,20, endpoint=True)
+	pbeCounts = []
+	everAttacks = []
+	alwaysAttacks = []
+	everTruths = []
+	alwaysTruths = []
+
+	for lieCost in lies:
+		populate(base, lieCost)
+		eqlbms = solveGame(state, pss, psf)
+
+		pbes = eqlbms[0]
+		pbeCount = len(pbes)
+
+		everAttack = 0
+		alwaysAttack = 0
+		everTruth = 0
+		alwaysTruth = 0
+
+		for pbe in pbes:
+			dprkStrat = pbe[1][0]
+			usaStrat = pbe[1][1]
+
+			if usaStrat[0] == 'a' | usaStrat[1] == 'a':
+				everAttack += 1
+
+			if usaStrat[0] == 'a' & usaStrat[1] == 'a':
+				alwaysAttack += 1
+
+			if dprkStrat[0] == 's' | dprkStrat[1] == 'f':
+				everTruth += 1
+
+			if dprkStrat[0] == 's' & dprkStrat[1] == 'f':
+				alwaysTruth += 1
+
+		pbeCounts.append(pbeCount)
+		everAttacks.append(everAttack)
+		alwaysAttacks.append(alwaysAttack)
+		everTruths.append(everTruth)
+		alwaysTruths.append(alwaysTruth)
+
+		# trueeq = [rational, eq, [alphaL,qL]]
+
+	
+
+	return None
+
+
+
+
 
 
 eqlbms = solveGame(state, pss, psf)
