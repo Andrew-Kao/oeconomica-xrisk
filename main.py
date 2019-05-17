@@ -61,13 +61,19 @@ def solveGame(state, pss, psf):
 	nashEquilibria = findNash(nashMatrix)
 
 	pbe = []
+	justNash = []
 
 	eqnum = 0
 	for eq in nashEquilibria:
-		checkEq(state, eq)
+		eqlbm = checkEq(state, eq)
+		if eqlbm[0] == 0:
+			justNash.append(eqlbm)
+		else:
+			pbe.append(eqlbm)
 		eqnum += 1
 
-	return nashMatrix
+
+	return [pbe,justNash]
 
 
 # for each nash, determine: (1) for what beliefs does sequentially rationality hold? (2) what beliefs are supported?
@@ -95,6 +101,7 @@ def checkEq(state, eq):
 		bounds = solnSucc.as_set().boundary
 		alphaL[0], alphaL[1] = bounds
 	except:
+		alphaL[0] = solnSucc.as_set()
 		alphaL[1] = solnSucc.as_set()
 		pass
 
@@ -113,13 +120,62 @@ def checkEq(state, eq):
 		bounds = solnSucc.as_set().boundary
 		qL[0], qL[1] = bounds
 	except:
+		qL[0] = solnSucc.as_set()
 		qL[1] = solnSucc.as_set()
 		pass
 
-	trueeq = [0, eq, [alphaL,qL]]
-	print(trueeq)
+	# use actual beliefs -- rational if it works
 
-	return 
+	rational = 1
+
+	# alphaT is the belief constraint imposed by DPRK strategy
+	# -1 stands in for undefined 
+	dprkStrat = eq[0]
+	if dprkStrat == "ss":
+		alphaT = pss
+		qT = -1
+	elif dprkStrat == "sf":
+		alphaT = 1
+		qT = 0
+	elif dprkStrat == "fs":
+		alphaT = 0
+		qT = 1
+	else:
+		alphaT = -1
+		qT = psf
+
+	# check that this is valid, update values to reflect qT/alphaT if so
+	# print(str(qT) + " | " + str(alphaT))
+	if qT == -1:
+		if (alphaT < alphaL[0]) | (alphaT > alphaL[1]):
+			rational = 0
+		else:
+			alphaL[0] = alphaT
+			alphaL[1] = alphaT
+	elif alphaT == -1:
+		if (qT < qL[0]) | (qT > qL[1]):
+			rational = 0
+		else:
+			qL[0] = qT
+			qL[1] = qT
+	else:
+		if (alphaT < alphaL[0])| (alphaT > alphaL[1]) | (qT < qL[0]) | (qT > qL[1]):
+			rational = 0
+		elif dprkStrat == "sf":
+			alphaL[0] = 1
+			alphaL[1] = 1
+			qL[0] = 0
+			qL[1] = 0
+		else:
+			alphaL[0] = 0
+			alphaL[1] = 0
+			qL[0] = 1
+			qL[1] = 1
+
+
+	trueeq = [rational, eq, [alphaL,qL]]
+
+	return trueeq
 
 
 
@@ -198,7 +254,9 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 	return (dprk, usa)
 
 
-solveGame(state, pss, psf)
+eqlbms = solveGame(state, pss, psf)
+print(eqlbms[0])  # PBEs
+print(eqlbms[1])  # non-PBEs, but still Nash
 
 
 
