@@ -28,6 +28,8 @@ rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
 # print(RenderTree(top))
+<<<<<<< HEAD
+=======
 
 
 def populate(outcomes, cost):
@@ -49,18 +51,22 @@ def populate(outcomes, cost):
 	aff.usa = outcomes[7][1]
 
 	return None
+>>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
 
 # payoff: (dprk, usa)
 # pss: P(Success | US obs. success), psf: P(Success | US obs. failure)
-state = {
-	("ss","aa"): ((-2,-3),(-2,2)), ("sf","aa"): ((-2,-3),(-2,2)), ("fs","aa"): ((-2,-3),(-2,2)), ("ff","aa"): ((-2,-3),(-2,2)),
-	("ss","ar"): ((-2,-3),(-2,2)), ("sf","ar"): ((-2,-3),(0,0)), ("fs","ar"): ((0,0),(-2,2)), ("ff","ar"): ((0,0),(0,0)),
-	("ss","ra"): ((0,-1),(0,-1)), ("sf","ra"): ((0,-1),(-2,2)), ("fs","ra"): ((-2,-3),(0,-1)), ("ff","ra"): ((-2,-3),(-2,2)),
-	("ss","rr"): ((0,-1),(0,-1)), ("sf","rr"): ((0,-1),(0,0)), ("fs","rr"): ((0,0),(0,-1)), ("ff","rr"): ((0,0),(0,0))
-}
+# "xy" = "x" when success, "y" when failure
+
+# state = {
+# 	("ss","aa"): ((-2,-3),(-2,2)), ("sf","aa"): ((-2,-3),(-2,2)), ("fs","aa"): ((-2,-3),(-2,2)), ("ff","aa"): ((-2,-3),(-2,2)),
+# 	("ss","ar"): ((-2,-3),(-2,2)), ("sf","ar"): ((-2,-3),(0,0)), ("fs","ar"): ((0,0),(-2,2)), ("ff","ar"): ((0,0),(0,0)),
+# 	("ss","ra"): ((0,-1),(0,-1)), ("sf","ra"): ((0,-1),(-2,2)), ("fs","ra"): ((-2,-3),(0,-1)), ("ff","ra"): ((-2,-3),(-2,2)),
+# 	("ss","rr"): ((0,-1),(0,-1)), ("sf","rr"): ((0,-1),(0,0)), ("fs","rr"): ((0,0),(0,-1)), ("ff","rr"): ((0,0),(0,0))
+# }
+
 pss = .75 
 psf = .25
 
@@ -94,7 +100,7 @@ def solveGame(state, pss, psf):
 
 	eqnum = 0
 	for eq in nashEquilibria:
-		eqlbm = checkEq(state, eq)
+		eqlbm = checkEq(eq)
 		if eqlbm[0] == 0:
 			justNash.append(eqlbm)
 		else:
@@ -107,7 +113,7 @@ def solveGame(state, pss, psf):
 
 # for each nash, determine: (1) for what beliefs does sequentially rationality hold? (2) what beliefs are supported?
 # note - we only need to check the US, bc DPRK is deterministic
-def checkEq(state, eq):
+def checkEq(eq):
 
 	alpha, q = symbols('alpha q')
 
@@ -276,11 +282,21 @@ def findBR(nashMatrix):
 
 # usa, dprk are expected payoffs for the usa, dprk
 def expectedPayoff(usamove,dprkmove, state,pss, psf):
-	dprk = state[dprkmove, usamove][0][0] * pss + state[dprkmove, usamove][1][0] * psf
-	usa = state[dprkmove, usamove][0][1] * pss + state[dprkmove, usamove][1][1] * psf
+	# dprk = state[dprkmove, usamove][0][0] * pss + state[dprkmove, usamove][1][0] * psf
+	# usa = state[dprkmove, usamove][0][1] * pss + state[dprkmove, usamove][1][1] * psf
+
+	succ_key = "s" + dprkmove[0] + usamove[0]
+	fail_key = "f" + dprkmove[1] + usamove[1]
+	dprk = pss * state[succ_key][0] + psf * state[fail_key][0]
+	usa = pss * state[succ_key][1] + psf * state[fail_key][1]
 	return (dprk, usa)
 
 
+<<<<<<< HEAD
+# eqlbms = solveGame(state, pss, psf)
+# print(eqlbms[0])  # PBEs
+# print(eqlbms[1])  # non-PBEs, but still Nash
+=======
 ###########
 ## Graphing/computation loop
 ###########
@@ -347,6 +363,7 @@ def lying():
 eqlbms = solveGame(state, pss, psf)
 print(eqlbms[0])  # PBEs
 print(eqlbms[1])  # non-PBEs, but still Nash
+>>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 
