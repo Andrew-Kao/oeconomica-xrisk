@@ -27,11 +27,6 @@ failure = Node("failure", parent = Failure)
 rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
-# print(RenderTree(top))
-<<<<<<< HEAD
-=======
-
-
 def populate(outcomes, cost):
 	rss.dprk = outcomes[0][0]
 	rss.usa = outcomes[0][1]
@@ -51,7 +46,6 @@ def populate(outcomes, cost):
 	aff.usa = outcomes[7][1]
 
 	return None
->>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
@@ -292,11 +286,10 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 	return (dprk, usa)
 
 
-<<<<<<< HEAD
 # eqlbms = solveGame(state, pss, psf)
 # print(eqlbms[0])  # PBEs
 # print(eqlbms[1])  # non-PBEs, but still Nash
-=======
+
 ###########
 ## Graphing/computation loop
 ###########
@@ -360,7 +353,6 @@ def lying():
 eqlbms = solveGame(state, pss, psf)
 print(eqlbms[0])  # PBEs
 print(eqlbms[1])  # non-PBEs, but still Nash
->>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
 
 
 
