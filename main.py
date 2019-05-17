@@ -3,19 +3,8 @@ import numpy as np
 from anytree import Node, RenderTree
 from sympy import *
 
-# contains info about payoffs and probabilities of success given observed success/failure
 
-# payoff: (dprk, usa)
-# pss: P(Success | US obs. success), psf: P(Success | US obs. failure)
-state = {
-	("ss","aa"): ((-2,-3),(-2,2)), ("sf","aa"): ((-2,-3),(-2,2)), ("fs","aa"): ((-2,-3),(-2,2)), ("ff","aa"): ((-2,-3),(-2,2)),
-	("ss","ar"): ((-2,-3),(-2,2)), ("sf","ar"): ((-2,-3),(0,0)), ("fs","ar"): ((0,0),(-2,2)), ("ff","ar"): ((0,0),(0,0)),
-	("ss","ra"): ((0,-1),(0,-1)), ("sf","ra"): ((0,-1),(-2,2)), ("fs","ra"): ((-2,-3),(0,-1)), ("ff","ra"): ((-2,-3),(-2,2)),
-	("ss","rr"): ((0,-1),(0,-1)), ("sf","rr"): ((0,-1),(0,0)), ("fs","rr"): ((0,0),(0,-1)), ("ff","rr"): ((0,0),(0,0))
-}
-pss = .75 
-psf = .25
-
+### The Tree
 top = Node("top")
 Success = Node("Success", parent = top)
 success = Node("success", parent = Success)
@@ -34,6 +23,20 @@ rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
 print(RenderTree(top))
+
+
+# contains info about payoffs and probabilities of success given observed success/failure
+
+# payoff: (dprk, usa)
+# pss: P(Success | US obs. success), psf: P(Success | US obs. failure)
+state = {
+	("ss","aa"): ((-2,-3),(-2,2)), ("sf","aa"): ((-2,-3),(-2,2)), ("fs","aa"): ((-2,-3),(-2,2)), ("ff","aa"): ((-2,-3),(-2,2)),
+	("ss","ar"): ((-2,-3),(-2,2)), ("sf","ar"): ((-2,-3),(0,0)), ("fs","ar"): ((0,0),(-2,2)), ("ff","ar"): ((0,0),(0,0)),
+	("ss","ra"): ((0,-1),(0,-1)), ("sf","ra"): ((0,-1),(-2,2)), ("fs","ra"): ((-2,-3),(0,-1)), ("ff","ra"): ((-2,-3),(-2,2)),
+	("ss","rr"): ((0,-1),(0,-1)), ("sf","rr"): ((0,-1),(0,0)), ("fs","rr"): ((0,0),(0,-1)), ("ff","rr"): ((0,0),(0,0))
+}
+pss = .75 
+psf = .25
 
 
 # first one is success, second letter is failure
@@ -82,7 +85,7 @@ def checkEq(state, eq):
 
 	alpha, q = symbols('alpha q')
 
-	# trueeq = [boolean for whether it holds, actions - [eq], beliefs - [[alpha min, alpha max],[q min, q max]]]
+	# end goal is to make a trueeq = [boolean for whether it holds, actions - [eq], beliefs - [[alpha min, alpha max],[q min, q max]]]
 	alphaL = [0,1]
 	qL = [0,1]
 
@@ -98,8 +101,7 @@ def checkEq(state, eq):
 	solnSucc = solve([ alpha* (globals()[usRealStrat+"ss"].usa) + (1-alpha)*(globals()[usRealStrat+"fs"].usa) >= \
 		alpha* (globals()[usFakeStrat+"ss"].usa) + (1-alpha)*(globals()[usFakeStrat+"fs"].usa), alpha >= 0, alpha <= 1],dict = True)
 	try:
-		bounds = solnSucc.as_set().boundary
-		alphaL[0], alphaL[1] = bounds
+		alphaL[0], alphaL[1] = solnSucc.as_set().boundary
 	except:
 		alphaL[0] = solnSucc.as_set()
 		alphaL[1] = solnSucc.as_set()
@@ -117,8 +119,7 @@ def checkEq(state, eq):
 	solnSucc = solve([ alpha* (globals()[usRealStrat+"sf"].usa) + (1-alpha)*(globals()[usRealStrat+"ff"].usa) >= \
 		alpha* (globals()[usFakeStrat+"sf"].usa) + (1-alpha)*(globals()[usFakeStrat+"ff"].usa), alpha >= 0, alpha <= 1],dict = True)
 	try:
-		bounds = solnSucc.as_set().boundary
-		qL[0], qL[1] = bounds
+		qL[0], qL[1] = solnSucc.as_set().boundary
 	except:
 		qL[0] = solnSucc.as_set()
 		qL[1] = solnSucc.as_set()
