@@ -2,7 +2,18 @@ import pdb
 import numpy as np
 from anytree import Node, RenderTree
 from sympy import *
+import plotly.plotly as py
+import plotly.graph_objs as go
 
+
+
+# lying cost
+lieCost = 2
+
+
+
+# our base outcomes
+base = [[0,1],[-2,-3],[0,0],[-2,-3],[0,-1],[-2,2],[0,0],[-2,2]]
 
 ### The Tree
 top = Node("top")
@@ -22,7 +33,28 @@ failure = Node("failure", parent = Failure)
 rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
-print(RenderTree(top))
+# print(RenderTree(top))
+
+
+def populate(outcomes, cost):
+	rss.dprk = outcomes[0][0]
+	rss.usa = outcomes[0][1]
+	ass.dprk = outcomes[1][0]
+	ass.usa = outcomes[1][1]
+	rsf.dprk = outcomes[2][0] - cost
+	rsf.usa = outcomes[2][1]
+	asf.dprk = outcomes[3][0] - cost
+	asf.usa = outcomes[3][1]
+	rfs.dprk = outcomes[4][0] - cost
+	rfs.usa = outcomes[4][1]
+	afs.dprk = outcomes[5][0] - cost
+	afs.usa = outcomes[5][1]
+	rff.dprk = outcomes[6][0]
+	rff.usa  =outcomes[6][1]
+	aff.dprk = outcomes[7][0]
+	aff.usa = outcomes[7][1]
+
+	return None
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
