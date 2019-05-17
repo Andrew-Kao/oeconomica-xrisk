@@ -332,7 +332,10 @@ def lying():
 
 		# trueeq = [rational, eq, [alphaL,qL]]
 
-	
+	plt.plot(x,pbeCount, color = "blue")
+	plt.plot(x,everAttack, color = "black")
+	plt.plot(x,alwaysAttack, color = "red")
+	plt.close(fig)
 
 	return None
 
