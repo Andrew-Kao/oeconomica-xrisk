@@ -41,7 +41,7 @@ def tree_to_states(top):
 	'''
 	rv = {}
 	for outcome in top.children:
-		out = outcome.name[0].lower() 		#'S' or 'F'
+		out = outcome.name[0].lower() 	
 		for dpm in outcome.children:
 			dp_move = dpm.name[0] 		# 's' or 'f'
 			for usm in dpm.children:

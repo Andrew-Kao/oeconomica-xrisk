@@ -28,7 +28,6 @@ rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
 
-
 def populate(outcomes, cost):
 	rss.dprk = outcomes[0][0]
 	rss.usa = outcomes[0][1]
@@ -50,6 +49,7 @@ def populate(outcomes, cost):
 	state = tree_to_states(top)
 	eqlbms = solveGame(state, pss, psf)
 	return eqlbms
+
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
@@ -386,6 +386,7 @@ def lying():
 # print(eqlbms[1])  # non-PBEs, but still Nash
 
 lying()
+
 
 
 
