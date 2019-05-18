@@ -358,18 +358,25 @@ def lying():
 
 		# trueeq = [rational, eq, [alphaL,qL]]
 
+
+	plt.title("Effect of Lying Cost on Attack")
+	plt.xlabel("Lying Cost")
 	plt.plot(lies,pbeCounts, color = "blue", label ="# equilibria")
 	plt.plot(lies,everAttacks, color = "black", label ="US Ever Attacks")
 	plt.plot(lies,alwaysAttacks, color = "red", label = "US Always Attacks")
 	plt.legend(loc = 'lower right')
+	plt.ylim(-0.1,4.1)
 	plt.savefig("lie1.png", dpi=250)
 
 	plt.cla()
 
+	plt.title("Effect of Lying Cost on Truth Telling")
+	plt.xlabel("Lying Cost")
 	plt.plot(lies,pbeCounts, color = "blue", label ="# equilibria")
 	plt.plot(lies,everTruths, color = "black", label ="DPRK Ever Tells Truth")
 	plt.plot(lies,alwaysTruths, color = "red", label = "DPRK Always Tells Truth")
 	plt.legend(loc = 'lower right')
+	plt.ylim(-0.1,4.1)
 	plt.savefig("truth1.png", dpi=250)
 
 	plt.cla()
