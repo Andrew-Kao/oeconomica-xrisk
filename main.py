@@ -27,9 +27,6 @@ failure = Node("failure", parent = Failure)
 rff = Node("retreat", parent = failure, dprk = 0, usa = 0)
 aff = Node("attack", parent = failure, dprk = -2, usa = 2)
 
-# print(RenderTree(top))
-<<<<<<< HEAD
-=======
 
 
 def populate(outcomes, cost):
@@ -50,8 +47,9 @@ def populate(outcomes, cost):
 	aff.dprk = outcomes[7][0]
 	aff.usa = outcomes[7][1]
 
-	return None
->>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
+	state = tree_to_states(top)
+	eqlbms = solveGame(state, pss, psf)
+	return eqlbms
 
 
 # contains info about payoffs and probabilities of success given observed success/failure
@@ -66,6 +64,24 @@ def populate(outcomes, cost):
 # 	("ss","ra"): ((0,-1),(0,-1)), ("sf","ra"): ((0,-1),(-2,2)), ("fs","ra"): ((-2,-3),(0,-1)), ("ff","ra"): ((-2,-3),(-2,2)),
 # 	("ss","rr"): ((0,-1),(0,-1)), ("sf","rr"): ((0,-1),(0,0)), ("fs","rr"): ((0,0),(0,-1)), ("ff","rr"): ((0,0),(0,0))
 # }
+
+def tree_to_states(top):
+	'''
+	'''
+	rv = {}
+	for outcome in top.children:
+		out = outcome.name[0].lower() 		#'S' or 'F'
+		for dpm in outcome.children:
+			dp_move = dpm.name[0] 		# 's' or 'f'
+			for usm in dpm.children:
+				us_move = usm.name[0] #'r' or 'a'
+				dp_payoff = usm.dprk
+				us_payoff = usm.usa
+				key = out + dp_move + us_move
+				val = (dp_payoff, us_payoff)
+				rv[key] = val
+
+	return rv
 
 pss = .75 
 psf = .25
@@ -292,11 +308,6 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 	return (dprk, usa)
 
 
-<<<<<<< HEAD
-# eqlbms = solveGame(state, pss, psf)
-# print(eqlbms[0])  # PBEs
-# print(eqlbms[1])  # non-PBEs, but still Nash
-=======
 ###########
 ## Graphing/computation loop
 ###########
@@ -305,7 +316,7 @@ def expectedPayoff(usamove,dprkmove, state,pss, psf):
 ### lying cost
 def lying():
 
-	lies = np.linspace(0,5,20, endpoint=True)
+	lies = np.linspace(-2,2,20, endpoint=True)
 	pbeCounts = []
 	everAttacks = []
 	alwaysAttacks = []
@@ -313,8 +324,7 @@ def lying():
 	alwaysTruths = []
 
 	for lieCost in lies:
-		populate(base, lieCost)
-		eqlbms = solveGame(state, pss, psf)
+		eqlbms = populate(base, lieCost)
 
 		pbes = eqlbms[0]
 		pbeCount = len(pbes)
@@ -328,16 +338,16 @@ def lying():
 			dprkStrat = pbe[1][0]
 			usaStrat = pbe[1][1]
 
-			if usaStrat[0] == 'a' | usaStrat[1] == 'a':
+			if (usaStrat[0] == 'a' )| (usaStrat[1] == 'a'):
 				everAttack += 1
 
-			if usaStrat[0] == 'a' & usaStrat[1] == 'a':
+			if (usaStrat[0] == 'a') &( usaStrat[1] == 'a'):
 				alwaysAttack += 1
 
-			if dprkStrat[0] == 's' | dprkStrat[1] == 'f':
+			if (dprkStrat[0] == 's') | (dprkStrat[1] == 'f'):
 				everTruth += 1
 
-			if dprkStrat[0] == 's' & dprkStrat[1] == 'f':
+			if (dprkStrat[0] == 's') & (dprkStrat[1] == 'f'):
 				alwaysTruth += 1
 
 		pbeCounts.append(pbeCount)
@@ -348,10 +358,21 @@ def lying():
 
 		# trueeq = [rational, eq, [alphaL,qL]]
 
-	plt.plot(x,pbeCount, color = "blue")
-	plt.plot(x,everAttack, color = "black")
-	plt.plot(x,alwaysAttack, color = "red")
-	plt.close(fig)
+	plt.plot(lies,pbeCounts, color = "blue", label ="# equilibria")
+	plt.plot(lies,everAttacks, color = "black", label ="US Ever Attacks")
+	plt.plot(lies,alwaysAttacks, color = "red", label = "US Always Attacks")
+	plt.legend(loc = 'lower right')
+	plt.savefig("lie1.png", dpi=250)
+
+	plt.cla()
+
+	plt.plot(lies,pbeCounts, color = "blue", label ="# equilibria")
+	plt.plot(lies,everTruths, color = "black", label ="DPRK Ever Tells Truth")
+	plt.plot(lies,alwaysTruths, color = "red", label = "DPRK Always Tells Truth")
+	plt.legend(loc = 'lower right')
+	plt.savefig("truth1.png", dpi=250)
+
+	plt.cla()
 
 	return None
 
@@ -360,13 +381,18 @@ def lying():
 
 
 
-eqlbms = solveGame(state, pss, psf)
-print(eqlbms[0])  # PBEs
-print(eqlbms[1])  # non-PBEs, but still Nash
->>>>>>> 464eda916f0701dda2081f79ec2a020f5e425017
+# eqlbms = solveGame(state, pss, psf)
+# print(eqlbms[0])  # PBEs
+# print(eqlbms[1])  # non-PBEs, but still Nash
+
+lying()
 
 
 
+## 
+#   # pbe; # pbe attacking, # pbe tell truth,  alpha and q
+
+#  lying cost; probability of success/failure given observation,  dprk threat bonus, ratio bonus to attacking (US)
 
 
 
